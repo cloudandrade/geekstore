@@ -1,0 +1,45 @@
+.Row {
+	/* align-items: center; */
+	/* display: flex;
+  flex-direction: row; */
+	margin-left: 3%;
+	display: table;
+	width: 600px; /*Optional*/
+	table-layout: fixed; /*Optional*/
+	border-spacing: 10px; /*Optional*/
+}
+.Column {
+	/* text-align: center; */
+	display: table-cell;
+	/* background-color: red; */ /*Optional*/
+}
+
+.textfields {
+	display: block;
+	width: 280px;
+	color: black !important;
+}
+
+.active-textfields {
+	display: block;
+	width: 280px;
+	color: #f44336 !important;
+}
+
+.textfield-input {
+	width: 250px;
+	height: 50px;
+	transition: all 0.3s ease-in-out 1s;
+}
+
+.textfield-input:focus {
+	transition: all 0.3s ease-in-out 1s;
+}
+
+.search-active {
+	color: #f44336;
+}
+
+.page-active {
+	color: #f44336;
+}
