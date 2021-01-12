@@ -15,6 +15,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
+import "./styles.css"
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		maxWidth: 250,
@@ -27,26 +29,37 @@ const useStyles = makeStyles((theme) => ({
 		// 16:9
 		cursor: 'pointer',
 	},
-	textCenter: {
-		textAlign: 'center',
-	},
 }));
 
-export default function ProdutoCard() {
+export default function ProdutoCard({price, title, image, isSale, oldPrice, onClick, addToCart}) {
 	const classes = useStyles();
+
+
 
 	return (
 		<Card className={classes.root}>
-			<CardHeader className={classes.textCenter} title="Shrimp and Chorizo" />
+			<CardHeader
+				onClick={onClick}
+				className="title"
+				title={title}
+			/>
 			<CardMedia
 				className={classes.media}
-				image="https://t2.uc.ltmcdn.com/pt/images/6/5/7/img_como_fazer_uma_armadilha_para_lagartos_21756_orig.jpg"
-				title="Paella dish"
-				onClick={() => console.log('clicou na imagem')}
+				image={image}
+				
+				onClick={onClick}
+			/* 	onMouseEnter={() => {
+					console.log('hover the card');
+				}}
+				onMouseLeave={() => console.log('leaved the card')} */
 			/>
-			<CardContent className={classes.textCenter}>
-				<Typography variant="subtitle2" color="inherit" component="h3">
-					Preço: R$ 20,00
+			<CardContent className="price" >
+				<Typography
+					variant="subtitle2"
+					color="inherit"
+					component="h3"
+				>
+					Preço: R$ {price}
 				</Typography>
 			</CardContent>
 		</Card>

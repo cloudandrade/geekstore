@@ -82,13 +82,14 @@ export default function NavBar() {
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
 	useEffect(() => {
-		console.log('inicio do component');
-		console.log(window.location.href);
 		switch (window.location.href) {
 			case `http://localhost:3000/`:
 				setActivePage('inicio');
 				break;
 			case `http://localhost:3000/camisas`:
+				setActivePage('camisas');
+				break;
+			case `http://localhost:3000/camisas/:id`:
 				setActivePage('camisas');
 				break;
 			case `http://localhost:3000/copos`:
