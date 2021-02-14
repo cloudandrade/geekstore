@@ -24,6 +24,22 @@ const Usuario = db.sequelize.define(
 			type: INTEGER,
 			required: true,
 		},
+		endereco: {
+			type: STRING,
+			required: true,
+		},
+		numero: {
+			type: INTEGER,
+			required: true,
+		},
+		bairro: {
+			type: STRING,
+			required: true,
+		},
+		cep: {
+			type: STRING,
+			required: true,
+		},
 	},
 	{
 		freezeTableName: true,

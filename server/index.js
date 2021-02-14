@@ -4,6 +4,7 @@ const routes = require('./src/routes');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
+const path = require('path');
 
 require('./src/config/db/db');
 
@@ -19,32 +20,8 @@ server.use(cors());
 server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 
-const swaggerOptions = {
-	swaggerDefinition: {
-		info: {
-			title: 'Geekstore API',
-			description: 'Geekstore API Endpoints Docs',
-			servers: ['http://localhost:5000'],
-			tags: [
-				{
-					name: 'geral',
-					description: 'Everything about your runners aplication',
-				},
-				{
-					name: 'usuarios',
-					description: 'Everything about your agents',
-				},
-			],
-		},
-	},
-	//['.routes/*.js]
-	apis: ['./src/routes/*.js'],
-};
-
-//Routes
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+//lidando com a pasta de arquivos
+server.use('/files', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
 
 server.use(routes);
 

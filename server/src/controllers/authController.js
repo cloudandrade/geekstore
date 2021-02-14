@@ -25,7 +25,7 @@ const auth = async (req, res) => {
 				});
 			}
 
-			let token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET || 'corky', {
+			let token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET || 'geek', {
 				expiresIn: 86400, // expires in 24 hours
 			});
 

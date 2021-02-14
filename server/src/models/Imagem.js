@@ -4,8 +4,24 @@ const { STRING, INTEGER } = require('sequelize');
 const Imagem = db.sequelize.define(
 	'imagem',
 	{
-		descricao: {
+		nome: {
 			type: STRING,
+			required: true,
+		},
+		formato: {
+			type: STRING,
+			required: true,
+		},
+		isPrincipal: {
+			type: INTEGER,
+			required: true,
+		},
+		isEstampa: {
+			type: INTEGER,
+			required: true,
+		},
+		produto_id: {
+			type: INTEGER,
 			required: true,
 		},
 	},

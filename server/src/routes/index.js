@@ -2,25 +2,17 @@ const { Router } = require('express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const os = require('os-utils');
+const multer = require('multer');
+const multerConfig = require('../config/storage/multer');
 
-//const Auth = require('../controllers/authController');
-//const { checkAuthorization } = require('../services/auth');
-//const usuarioC = require('../controllers/usuarioController');
-//const desafioC = require('../controllers/desafioController');
+const Auth = require('../controllers/authController');
+const { checkAuthorization } = require('../services/auth');
+const usuarioC = require('../controllers/usuarioController');
 const produtoC = require('../controllers/produtoController');
 const routes = Router();
 
 //================================= SERVER
-/**
- * @swagger
- * /:
- *  get:
- *    tags: ["geral"]
- *    description: Use to return server info
- *    responses:
- *      '200':
- *        description: A sucessfull response with server info
- */
+
 routes.get('/', async (req, res) => {
 	function format(seconds) {
 		function pad(s) {
@@ -43,32 +35,10 @@ routes.get('/', async (req, res) => {
 	});
 });
 
-/**
- * @swagger
- * /api/auth:
- *  post:
- *    tags: ["geral"]
- *    description: Use login in the application
- *    parameters: [
- *      	{
-						"in": "body",
-						"name": "body",
-						"description": "send a email and password to",
-						"required": true,
-            "schema": {
-              "properties":{
-				        "email": { "type": "string"},
-				        "senha": { "type": "string" }
-              }
-            }
-					}
- *    ]
- *    responses:
- *      '200':
- *        description: A sucessfull response
- */
-/* routes.post('/api/auth', Auth.auth);
-
+//============================================= USUARIOS
+routes.post('/api/usuarios', usuarioC.create);
+routes.get('/api/usuarios/:id', checkAuthorization, usuarioC.index);
+routes.post('/api/auth', Auth.auth);
 routes.get('/auth/verify', checkAuthorization, async (req, res) => {
 	res.json({
 		error: null,
@@ -76,63 +46,35 @@ routes.get('/auth/verify', checkAuthorization, async (req, res) => {
 			message: 'Autorizado com sucesso',
 		},
 	});
-}); */
+});
 
-//============================================= USERS
-/**
- * @swagger
- * /api/users:
- *  post:
- *    tags: ["usuarios"]
- *    description: Use create a user
- *    parameters: [
- *      	{
-						"in": "body",
-						"name": "body",
-						"description": "creates a user to use the application",
-						"required": true,
-            "schema": {
-              "properties":{
-								"nome": {"type": "string"},
-				        "email": { "type": "string"},
-								"senha": { "type": "string" },
-								"perfil": {"type": "integer"}
-              }
-            }
-					}
- *    ]
- *    responses:
- *      '200':
- *        description: A sucessfull response
- */
-/* routes.post('/api/users', usuarioC.create); */
+//============================================= ARQUIVOS TESTE
+routes.post('/api/arquivo', multer(multerConfig).array('files'), async (req, res) => {
+	const arquivos = req.files;
+	arquivos.forEach((a) => {
+		console.log(a.filename);
+	});
 
-/**
- * @swagger
- * /api/users/{id}:
- *  get:
- *    tags: ["usuarios"]
- *    description: Use to find a detailed user by id
- *    parameters: [
-					{
-						"name": "id",
-						"in": "path",
-						"description": "ID of the user",
-						"required": true,
-						"type": "integer",
-          },
-        ]
- *    responses:
- *      '200':
- *        description: A sucessfull response
- */
-/* routes.get('/api/users/:id', usuarioC.index); */
+	return res.send('arquivo criado');
+});
 
-//PRODUTOS
+router.get('api/arquivos/:name', (req, res) => {
+	const fileName = req.params.name;
+	const directoryPath = __basedir + '/resources/static/assets/uploads/';
 
+	res.download(directoryPath + fileName, fileName, (err) => {
+		if (err) {
+			res.status(500).send({
+				message: 'Could not download the file. ' + err,
+			});
+		}
+	});
+});
+
+//============================================= PRODUTOS
 routes.get('/api/produtos', produtoC.list);
 
-//misc functions
+//============================================= FUNCOES DO SISTEMA
 function uptime() {
 	const minutesTime = os.sysUptime() / 60 / 60;
 	const hours = Math.floor(minutesTime);
