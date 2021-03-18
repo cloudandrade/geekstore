@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -20,7 +20,14 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { mainListItems, secondaryListItems } from '../MenuList/listItems';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 import Page from '../../service/PageManager';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Popper from '@material-ui/core/Popper';
+import { useHistory } from 'react-router-dom';
 
 function Copyright() {
 	return (
@@ -116,9 +123,62 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const useStyles2 = makeStyles((theme) => ({
+	root: {
+		display: 'flex',
+	},
+	paper: {
+		marginRight: theme.spacing(2),
+	},
+}));
+
 export default function Dashboard() {
+	const history = useHistory();
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
+	//drawyer
+	const [open, setOpen] = useState(true);
+	//abrir menu de usuario
+	const classes2 = useStyles2();
+	const [openUser, setOpenUser] = React.useState(false);
+	const anchorRef = React.useRef(null);
+
+	const handleToggle = () => {
+		setOpenUser((prevOpen) => !prevOpen);
+	};
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+
+		setOpenUser(false);
+	};
+
+	const handleLogout = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+
+		localStorage.removeItem('token');
+		setOpenUser(false);
+		history.push('/');
+		window.location.reload();
+	};
+
+	function handleListKeyDown(event) {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			setOpenUser(false);
+		}
+	}
+	const prevOpen = React.useRef(open);
+	React.useEffect(() => {
+		if (prevOpen.current === true && open === false) {
+			anchorRef.current.focus();
+		}
+
+		prevOpen.current = open;
+	}, [open]);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -157,11 +217,14 @@ export default function Dashboard() {
 						GMD - Geek Manager Dashboard
 					</Typography>
 
-					<IconButton color="inherit">
+					<IconButton
+						color="inherit"
+						ref={anchorRef}
+						aria-controls={open ? 'menu-list-grow' : undefined}
+						aria-haspopup="true"
+						onClick={handleToggle}
+					>
 						<AccountCircleIcon />
-					</IconButton>
-					<IconButton color="inherit">
-						<SettingsIcon />
 					</IconButton>
 				</Toolbar>
 			</AppBar>
@@ -180,22 +243,43 @@ export default function Dashboard() {
 				<Divider />
 				<List>{mainListItems}</List>
 			</Drawer>
+			<Popper
+				open={openUser}
+				anchorEl={anchorRef.current}
+				role={undefined}
+				transition
+				disablePortal
+			>
+				{({ TransitionProps, placement }) => (
+					<Grow
+						{...TransitionProps}
+						style={{
+							transformOrigin:
+								placement === 'bottom' ? 'center top' : 'center bottom',
+						}}
+					>
+						<Paper>
+							<ClickAwayListener onClickAway={handleClose}>
+								<MenuList
+									autoFocusItem={open}
+									id="menu-list-grow"
+									onKeyDown={handleListKeyDown}
+								>
+									<MenuItem onClick={handleClose}>Profile</MenuItem>
+									<MenuItem onClick={handleClose}>My account</MenuItem>
+									<MenuItem onClick={handleLogout}>Logout</MenuItem>
+								</MenuList>
+							</ClickAwayListener>
+						</Paper>
+					</Grow>
+				)}
+			</Popper>
 			<main className={classes.content}>
 				<div className={classes.appBarSpacer} />
 				<Container maxWidth="lg" className={classes.container}>
 					<Grid container spacing={3}>
 						<Page />
-						{/* Recent Deposits */}
-						{/* <Grid item xs={12} md={4} lg={3}>
-							<Paper className={fixedHeightPaper}>
-								<Deposits />
-							</Paper>
-						</Grid> */}
-						{/* Recent Orders */}
 					</Grid>
-					{/* 	<Box pt={4}>
-						<Copyright />
-					</Box> */}
 				</Container>
 			</main>
 		</div>

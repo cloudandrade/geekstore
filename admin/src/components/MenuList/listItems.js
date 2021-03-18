@@ -10,6 +10,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { Link } from 'react-router-dom';
+import './styles.css';
 
 export const mainListItems = (
 	<div>
@@ -18,8 +19,7 @@ export const mainListItems = (
 				<ListItemIcon>
 					<DashboardIcon />
 				</ListItemIcon>
-
-				<ListItemText primary="Inicio" />
+				<ListItemText primary="Inicio" className="list-item-text" />
 			</ListItem>
 		</Link>
 		<Link to="/produtos">

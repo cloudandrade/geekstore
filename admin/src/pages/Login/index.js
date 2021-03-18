@@ -12,6 +12,7 @@ import SecurityIcon from '@material-ui/icons/Security';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -33,12 +34,21 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-let submit = () => {
-	console.log('submit');
-};
-
 export default function SignIn() {
+	let history = useHistory();
+
 	const classes = useStyles();
+
+	let submit = () => {
+		let value = 'token simulação';
+		localStorage.setItem('token', value);
+		history.push('/home');
+		//window.location.reload();
+	};
+
+	const inicio = () => {
+		history.push('/');
+	};
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -91,6 +101,11 @@ export default function SignIn() {
 						<Grid item xs>
 							<Link href="#" variant="body2">
 								Esqueceu sua senha?
+							</Link>
+						</Grid>
+						<Grid item xs>
+							<Link href="" variant="body2" onClick={inicio}>
+								Problemas com Login?
 							</Link>
 						</Grid>
 					</Grid>
