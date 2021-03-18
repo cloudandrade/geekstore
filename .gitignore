@@ -3,3 +3,6 @@ server/node_modules
 server/.env
 server/logs
 server/src/arquivos
+admin/node_modules
+node_modules
+admin/.env
