@@ -98,6 +98,9 @@ export default function NavBar() {
 			case `http://localhost:3000/acessorios`:
 				setActivePage('acessorios');
 				break;
+			case `http://localhost:3000/produto`:
+				setActivePage('camisas');
+				break;
 
 			default:
 				break;
@@ -109,7 +112,9 @@ export default function NavBar() {
 			setActivePage('inicio');
 			history('/');
 		} else {
-			setActivePage(redirect);
+			if (redirect !== 'carrinho') {
+				setActivePage(redirect);
+			}
 			history(`/${redirect}`);
 		}
 	};
@@ -258,7 +263,7 @@ export default function NavBar() {
 						>
 							<AccountCircle />
 						</IconButton>
-						<IconButton color="inherit">
+						<IconButton color="inherit" onClick={() => linkTo('carrinho')}>
 							<Badge color="secondary">
 								<ShoppingCartIcon />
 							</Badge>

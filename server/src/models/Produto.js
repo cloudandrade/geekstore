@@ -1,13 +1,12 @@
 const db = require('../config/db/db');
-const { STRING, INTEGER, DATE } = require('sequelize');
+const { STRING, INTEGER, DECIMAL, DATE } = require('sequelize');
 const Categoria = require('./Categoria');
-const Imagem = require('./Imagem');
 
 var Produto = db.sequelize.define(
 	'produto',
 	{
 		preco: {
-			type: INTEGER,
+			type: DECIMAL,
 			required: true,
 		},
 		descricao: {
@@ -25,10 +24,6 @@ var Produto = db.sequelize.define(
 			type: INTEGER,
 			required: true,
 		},
-		imagem_id: {
-			type: INTEGER,
-			required: true,
-		},
 	},
 	{
 		freezeTableName: true,
@@ -42,10 +37,6 @@ var Produto = db.sequelize.define(
 Produto.belongsTo(Categoria, {
 	foreignKey: 'categoria_id',
 	as: 'categoria',
-});
-
-Produto.belongsTo(Imagem, {
-	foreignKey: 'imagem_id',
 });
 
 /*Produto.sync({

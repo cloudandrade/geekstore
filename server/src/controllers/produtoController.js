@@ -7,69 +7,81 @@ const Logger = require('../services/logger_service');
 const logger = new Logger('server');
 const fs = require('fs');
 
+exports.index = async (req, res) => {
+	logger.info('Route - Busca de Produto por Id');
+	const id = req.params.id;
+
+	await Produto.findOne({ where: { id: id } }).then((produto) => {
+		console.log(produto);
+		res.send(produto);
+	});
+};
+
 //Buscar produtos
 exports.list = async (req, res) => {
 	logger.info('Route - Busca de Produtos');
-	const orderBy = req.params.orderBy;
-	let storedImageAddress;
-	let bypass;
-	let hashName;
-	let formato;
-	let buff;
 
-	//fazendo um select com join trazendo somente alguns atributos de ambos os lados
+	var payload = await sequelize.query(
+		`select 
+		s.id, 
+			s.nome,
+			s.descricao,
+			s.dataCriacao,
+			s.preco,
+			c.descricao as categoria,
+			i.id as imagemId,
+			i.nome as imagemNome,
+			i.formato as imagemFormato,
+			i.isPrincipal,
+			i.isEstampa
+	 from produto s 
+	 join imagem i 
+		on s.id = i.produto_id
+	join categoria c on s.categoria_id = c.id`,
+		{
+			type: QueryTypes.SELECT,
+		}
+	);
+
+	res.send(payload);
+};
+
+exports.create = async (req, res) => {
+	logger.info('Route - Criação de Produto');
+	const nome = req.body.nome;
+	const descricao = req.body.descricao;
+	const preco = req.body.preco;
+	const categoria = req.body.categoria_id;
+
+	if (!nome) {
+		res.status(400).send('O campo nome não pode ficar vazio');
+	} else if (!descricao) {
+		res.status(400).send('O campo descrição não pode ficar vazio');
+	} else if (!preco) {
+		res.status(400).send('O campo preço não pode ficar vazio');
+	} else if (!categoria) {
+		res.status(400).send('O campo categoria não pode ficar vazio');
+	}
+
+	let newProduto = {
+		nome: nome,
+		descricao: descricao,
+		preco: preco,
+		dataCriacao: Date.now(),
+		categoria_id: categoria,
+	};
+
+	console.log(newProduto);
+	let payload = null;
 	try {
-		let payload = await Produto.findAll(
-			{
-				attributes: ['id', 'preco', 'descricao', 'nome', 'dataCriacao'],
-				include: [
-					{ model: Categoria, attributes: ['descricao'], as: 'categoria' },
-					{ model: Imagem, attributes: ['base', 'formato'] },
-				],
-			},
-			{
-				type: QueryTypes.SELECT,
-			}
-		);
-
-		payload.map((produto) => {
-			produto = {
-				id: produto.dataValues.id,
-				preco: produto.dataValues.preco,
-				descricao: produto.dataValues.descricao,
-				nome: produto.dataValues.nome,
-				categoria: produto.dataValues.categoria.dataValues,
-				imagem: produto.dataValues.imagem.dataValues,
-			};
-
-			bypass = produto.imagem.base.split('/')[3].split('.');
-			//	bypass = bypass[3].split('.');
-			bypass = bypass[0];
-			hashName = bypass;
-			formato = produto.imagem.formato;
-			storedImageAddress = `./src/images/${hashName}.${formato}`;
-			buff = fs.readFileSync(storedImageAddress);
-			produto.imagem.base = buff.toString('base64');
-			return produto;
-		});
-
-		/* let payload = await sequelize.query(
-			`select c.distancia, c.duracao, c.pace, c.data from corridas as c
-			join usuario_corridas uc on 
-			uc.usuario_id = ${usuarioId} 
-			and
-			uc.corrida_id = c.id`,
-			{
-				type: QueryTypes.SELECT,
-			}
-		); */
-		let response = { sucess: true, payload };
+		payload = await Produto.create(newProduto);
+		response = { sucess: true, payload };
 		return res.send(response);
 	} catch (error) {
-		let payload = 'falha ao buscar produtos';
-		logger.error(payload, error);
+		payloadError =
+			'falha ao cadastrar produto // PAYLOAD: ' + payload + ' // ERROR: ' + error;
+		logger.error(payloadError);
 		let response = { sucess: false, payload };
 		res.status(500).send(response);
-		throw Error(error);
 	}
 };

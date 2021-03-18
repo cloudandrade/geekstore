@@ -2,12 +2,12 @@ import React from 'react';
 
 // import { Container } from './styles';
 
-function ProdutoDetalhes() {
+function Carrinho() {
 	return (
 		<div>
-			<h1>Produto Detalhes</h1>
+			<h1>Carrinho</h1>
 		</div>
 	);
 }
 
-export default ProdutoDetalhes;
+export default Carrinho;

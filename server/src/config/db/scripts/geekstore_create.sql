@@ -3,7 +3,7 @@ CREATE SCHEMA `geekstore`;
 USE `geekstore`;
 
 CREATE TABLE `produto` (
-	`id` int NOT NULL,
+	`id` int NOT NULL AUTO_INCREMENT,
 	`nome` varchar(100) NOT NULL,
 	`descricao` varchar(255) NOT NULL,
 	`dataCriacao` DATE NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `carrinho` (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `image` (
+CREATE TABLE `imagem` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`nome` varchar(255) NOT NULL,
 	`formato` varchar(10) NOT NULL,

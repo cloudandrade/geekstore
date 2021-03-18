@@ -7,7 +7,7 @@ const aws = require('aws-sdk');
 const storageTypes = {
 	local: multer.diskStorage({
 		destination: (req, file, cb) => {
-			cb(null, path.resolve(__dirname, '..', '..', 'tmp', 'uploads'));
+			cb(null, path.resolve(__dirname, '..', '..', 'arquivos', 'imagens'));
 		},
 		filename: (req, file, cb) => {
 			crypto.randomBytes(16, (err, hash) => {
@@ -37,7 +37,7 @@ const storageTypes = {
 };
 
 module.exports = {
-	dest: path.resolve(__dirname, '..', '..', 'tmp', 'uploads'),
+	dest: path.resolve(__dirname, '..', '..', 'arquivos', 'imagens'),
 	storage: storageTypes[`${process.env.APP_STORAGE}`], //muda a abordagem que será usada para amarzenamento de imagem (local ou nuvem- s3)
 	limits: {
 		fileSize: 2 * 1024 * 1024,

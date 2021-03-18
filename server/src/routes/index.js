@@ -3,12 +3,16 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const os = require('os-utils');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+
 const multerConfig = require('../config/storage/multer');
 
 const Auth = require('../controllers/authController');
 const { checkAuthorization } = require('../services/auth');
 const usuarioC = require('../controllers/usuarioController');
 const produtoC = require('../controllers/produtoController');
+const arquivoC = require('../controllers/arquivoController');
 const routes = Router();
 
 //================================= SERVER
@@ -48,32 +52,46 @@ routes.get('/auth/verify', checkAuthorization, async (req, res) => {
 	});
 });
 
-//============================================= ARQUIVOS TESTE
-routes.post('/api/arquivo', multer(multerConfig).array('files'), async (req, res) => {
-	const arquivos = req.files;
-	arquivos.forEach((a) => {
-		console.log(a.filename);
-	});
-
-	return res.send('arquivo criado');
-});
-
-router.get('api/arquivos/:name', (req, res) => {
-	const fileName = req.params.name;
-	const directoryPath = __basedir + '/resources/static/assets/uploads/';
-
-	res.download(directoryPath + fileName, fileName, (err) => {
-		if (err) {
-			res.status(500).send({
-				message: 'Could not download the file. ' + err,
-			});
-		}
-	});
-});
-
 //============================================= PRODUTOS
 routes.get('/api/produtos', produtoC.list);
+routes.get('/api/produtos/:id', produtoC.index);
+routes.post('/api/produtos', produtoC.create);
 
+//============================================= ARQUIVOS
+routes.post('/api/arquivo/unico', multer(multerConfig).single('file'), arquivoC.create);
+routes.post(
+	'/api/arquivo/multi',
+	multer(multerConfig).array('files'),
+	arquivoC.batchCreate
+);
+
+routes.get('/api/arquivo', (req, res) => {
+	console.log(process.cwd());
+
+	fs.readFile(
+		`${process.cwd()}/src/arquivos/imagens/03d2ec9e6c42a93055b8d563456fa18a-1_QaDoXxtLkRbmoyWNlbwdNA.jpeg`,
+		(err, data) => {
+			//error handle
+			if (err) res.status(500).send(err);
+
+			//get image file extension name
+			let extensionName = path.extname(
+				`${process.cwd()}/src/arquivos/imagens/03d2ec9e6c42a93055b8d563456fa18a-1_QaDoXxtLkRbmoyWNlbwdNA.jpeg`
+			);
+
+			//convert image file to base64-encoded string
+			let base64Image = new Buffer(data, 'binary').toString('base64');
+
+			//combine all strings
+			let imgSrcString = `data:image/${extensionName
+				.split('.')
+				.pop()};base64,${base64Image}`;
+
+			//send image src string into jade compiler
+			res.send(imgSrcString);
+		}
+	);
+});
 //============================================= FUNCOES DO SISTEMA
 function uptime() {
 	const minutesTime = os.sysUptime() / 60 / 60;
