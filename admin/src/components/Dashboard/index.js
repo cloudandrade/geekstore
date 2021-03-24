@@ -265,9 +265,8 @@ export default function Dashboard() {
 									id="menu-list-grow"
 									onKeyDown={handleListKeyDown}
 								>
-									<MenuItem onClick={handleClose}>Profile</MenuItem>
-									<MenuItem onClick={handleClose}>My account</MenuItem>
-									<MenuItem onClick={handleLogout}>Logout</MenuItem>
+									<MenuItem onClick={handleClose}>Perfil</MenuItem>
+									<MenuItem onClick={handleLogout}>Sair</MenuItem>
 								</MenuList>
 							</ClickAwayListener>
 						</Paper>

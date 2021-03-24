@@ -11,6 +11,7 @@ import {
 import Login from './pages/Login';
 import { ensureAuthenticated } from './service/AuthUtils';
 import Home from './pages/Home/index';
+import { getServerOnline } from './service/requests';
 
 function App() {
 	let history = useHistory();

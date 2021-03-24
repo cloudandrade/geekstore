@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useHistory } from 'react-router-dom';
+import { loginRequest } from '../../service/requests';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -36,13 +37,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
 	let history = useHistory();
+	const [email, setEmail] = React.useState('');
+	const [senha, setSenha] = React.useState('');
 
+	const [userLogado, setUserLogado] = React.useState(null);
 	const classes = useStyles();
 
-	let submit = () => {
-		let value = 'token simulação';
-		localStorage.setItem('token', value);
-		history.push('/home');
+	let submit = async () => {
+		await loginRequest(email, senha).then((res) => {
+			if (res.data.auth === true) {
+				var value = res.data.accessToken;
+				console.log(value);
+				setUserLogado(res.data.payload.id);
+				localStorage.setItem('token', value);
+				localStorage.setItem('usuariologado', userLogado);
+				console.log('inside go');
+				console.log(localStorage.getItem('token'));
+				history.push('/home');
+			} else {
+				console.log('erro na autenticacao');
+			}
+		});
 		//window.location.reload();
 	};
 
@@ -70,6 +85,9 @@ export default function SignIn() {
 						label="Email"
 						name="email"
 						autoComplete="email"
+						onChange={(event) => {
+							setEmail(event.target.value);
+						}}
 						autoFocus
 					/>
 					<TextField
@@ -81,6 +99,9 @@ export default function SignIn() {
 						label="Senha"
 						type="password"
 						id="password"
+						onChange={(event) => {
+							setSenha(event.target.value);
+						}}
 						autoComplete="current-password"
 					/>
 					<FormControlLabel
@@ -89,6 +110,7 @@ export default function SignIn() {
 					/>
 					<Button
 						type="submit"
+						onSubmit={submit}
 						fullWidth
 						variant="contained"
 						color="primary"

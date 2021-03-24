@@ -1,0 +1,41 @@
+.card-body-default {
+	margin: 10px;
+	min-width: 200px;
+	background-color: white !important;
+	color: black;
+}
+
+.card-body-blue {
+	margin: 10px;
+	min-width: 200px;
+	background-color: cornflowerblue !important;
+	color: aliceblue !important;
+}
+
+.card-body-green {
+	margin: 10px;
+	min-width: 200px;
+	background-color: forestgreen !important;
+	color: aliceblue !important;
+}
+
+.card-body-yellow {
+	margin: 10px;
+	min-width: 200px;
+	background-color: gold !important;
+	color: aliceblue !important;
+}
+
+.card-body-red {
+	margin: 10px;
+	min-width: 200px;
+	background-color: tomato !important;
+	color: aliceblue !important;
+}
+
+.card-body-grey {
+	margin: 10px;
+	min-width: 200px;
+	background-color: grey !important;
+	color: aliceblue !important;
+}
