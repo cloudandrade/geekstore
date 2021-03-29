@@ -10,3 +10,7 @@ export function getServerOnline() {
 export function loginRequest(email, senha) {
 	return api.post('api/auth', { email, senha });
 }
+
+export function getAllProdutos() {
+	return api.get('api/produtos');
+}

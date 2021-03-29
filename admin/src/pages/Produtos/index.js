@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,11 +14,55 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import { getAllProdutos } from '../../service/requests';
 
 import TableList from '../../components/TableList/index';
 
 function Produtos() {
-	return <TableList />;
+	const [produtos, setProdutos] = useState([]);
+
+	const columns = [
+		{ title: 'Id', field: 'id' },
+		{ title: 'Nome', field: 'nome' },
+		{ title: 'Descrição', field: 'descricao' },
+		{ title: 'Preço', field: 'preco' },
+		{ title: 'Categoria', field: 'categoria' },
+		{ title: 'Opções', field: 'opcoes' },
+	];
+
+	function handleAdd() {
+		alert('Teste de Botão');
+	}
+
+	useEffect(async () => {
+		let dados = [];
+		await getAllProdutos().then((res) => {
+			console.log('Requisicao');
+			console.log(res);
+			res.data.forEach((item) => {
+				var produto = {
+					id: item.id,
+					nome: item.nome,
+					descricao: item.descricao,
+					preco: item.preco,
+					categoria: item.categoria,
+					opcoes: null,
+				};
+				dados.push(produto);
+			});
+
+			setProdutos(dados);
+		});
+	}, []);
+
+	return (
+		<TableList
+			titulo={'Produtos'}
+			colunas={columns}
+			dados={produtos}
+			addAction={() => handleAdd()}
+		/>
+	);
 }
 
 export default Produtos;
